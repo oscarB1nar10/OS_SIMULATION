@@ -11,6 +11,6 @@ class Proceso:
 
 class Recurso:
 
-    def __init__(self):
+    def __init__(self, nombre):
         self.estado = "libre"
-        self.proceso = []
+        self.nombre = nombre
