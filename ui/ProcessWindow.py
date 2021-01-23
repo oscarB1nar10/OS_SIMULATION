@@ -1,8 +1,6 @@
-import PySimpleGUI as sg
-
 from tkinter import *
 
-from class_Proceso import Proceso
+from OS_SIMULATION.class_Proceso import Proceso
 
 
 class ProcessWindow:
