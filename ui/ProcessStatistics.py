@@ -8,6 +8,8 @@ class ProcessStatistics:
 
     def __init__(self, process_info):
 
+        self.root = tk.Tk()
+
         self.process_info = process_info
         self.process_name = self.get_process_name()
         self.process_size = self.get_process_weight()
@@ -59,7 +61,7 @@ class ProcessStatistics:
         from controller layer.
         """
 
-        root = tk.Tk()
+        self.root = tk.Tk()
 
         process_df = pd.DataFrame({
             "Process name": self.process_name,
@@ -71,7 +73,7 @@ class ProcessStatistics:
 
         cols = list(process_df.columns)
 
-        tree = ttk.Treeview(root)
+        tree = ttk.Treeview(self.root)
         tree.pack()
         tree["columns"] = cols
         for i in cols:
@@ -81,4 +83,10 @@ class ProcessStatistics:
         for index, row in process_df.iterrows():
             tree.insert("", 0, text=index, values=list(row))
 
-        root.mainloop()
+        self.root.mainloop()
+
+    def destroy_stat_view(self):
+        self.root.destroy()
+
+    def update_view(self):
+        self.root.update()

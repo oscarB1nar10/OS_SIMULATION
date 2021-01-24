@@ -4,11 +4,23 @@ from class_Proceso import Proceso
 from modelo import Modelo
 from ui.ProcessStatistics import ProcessStatistics
 from random import randint
+import pandas as pd
+from tkinter import ttk
+import tkinter as tk
+import time
+import threading
+
 
 
 class ProcessWindow:
 
     def __init__(self, win):
+        self.process_state = []
+        self.process_resources = []
+        self.process_threads = []
+        self.process_size = []
+        self.process_name = []
+
         self.process_to_execute = []
         self.model = Modelo()
 
@@ -100,12 +112,15 @@ class ProcessWindow:
         # process = Proceso(self.process_to_execute)
         self.clean_process_frame()
 
-
-
         while self.model.hayprocesos():
             process_result = self.model.Corriendo()
-            ProcessStatistics(process_result)
-
+            self.map_process_info(process_result)
+            self.update_view()
+            #process_stats = ProcessStatistics(process_result)
+            #process_stats.show_process_stats().destroy_stat_view()
+            ##threading.Thread(show_process_stats(process_result)).start()
+            #
+            #process_stats.destroy_stat_view()
 
     def clean_process_frame(self):
         for widget in self.process_frame.winfo_children():
@@ -118,9 +133,110 @@ class ProcessWindow:
         # information from model [Process]
         ProcessStatistics(self.process_to_execute)
 
+    ########################
+
+    def map_process_info(self, process_info):
+        self.process_name = self.get_process_name(process_info)
+        self.process_size = self.get_process_weight(process_info)
+        self.process_threads = self.get_process_threads(process_info)
+        # Those process resources should be a type of ENUM
+        self.process_resources = self.get_process_resources(process_info)
+        # Those process resources should be a type of ENUM also
+        self.process_state = self.get_process_state(process_info)
+
+        self.show_process_stats()
+
+    def get_process_name(self, process_info):
+        names = []
+        for process in process_info.get('procesos'):
+            names.append(process.nombre)
+
+        return names
+
+    def get_process_weight(self, process_info):
+        weights = []
+        for process in process_info.get('procesos'):
+            weights.append(process.tamaño)
+
+        return weights
+
+    def get_process_threads(self, process_info):
+        threads = []
+        for process in process_info.get('procesos'):
+            threads.append(process.hilos)
+
+        return threads
+
+    def get_process_resources(self, process_info):
+        resources = []
+        for process in process_info.get('procesos'):
+            resources.append(process.recursos)
+
+        return resources
+
+    def get_process_state(self, process_info):
+        states = []
+        for process in process_info.get('procesos'):
+            states.append(process.estado)
+
+        return states
+
+    def show_process_stats(self):
+
+        """
+        Those mock are for visualization purpose. As soon as possible we have obtain that info (Processor model)
+        from controller layer.
+        """
+
+        process_df = pd.DataFrame({
+            "Process name": self.process_name,
+            "process size": self.process_size,
+            "process_threads": self.process_threads,
+            "process_resources": self.process_resources,
+            "process state": self.process_state
+        })
+
+        cols = list(process_df.columns)
+
+        tree = ttk.Treeview(second_frame)
+        tree.pack()
+        tree["columns"] = cols
+        for i in cols:
+            tree.column(i, anchor='w')
+            tree.heading(i, text=i, anchor='w')
+
+        for index, row in process_df.iterrows():
+            tree.insert("", 0, text=index, values=list(row))
+
+    def destroy_stat_view(self):
+        window.destroy()
+
+    def update_view(self):
+        window.update()
+
 
 window = Tk()
-my_win = ProcessWindow(window)
+main_frame = Frame(window)
+main_frame.pack(fill=BOTH, expand=1)
+
+# Create a canvas
+my_canvas = Canvas(main_frame)
+my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+# Add a scrollbar to the canvas
+my_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=my_canvas.yview)
+my_scrollbar.pack(side=RIGHT, fill=Y)
+
+# Configure the canvas
+my_canvas.configure(yscrollcommand=my_scrollbar.set)
+my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+
+# Create another frame  inside canvas
+second_frame = Frame(my_canvas)
+
+# Add that new frame to a window in the canvas
+my_canvas.create_window((0, 0), window=second_frame, anchor="nw")
+my_win = ProcessWindow(main_frame)
 window.title('Hello Python')
 window.geometry('500x300+10+10')
 window.mainloop()
