@@ -4,6 +4,7 @@ from random import choice
 class Modelo:
 
     def __init__(self):
+        self.resources = ["r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9"]
         self.procesos = []
         self.enejecucion = []
         self.terminado = []
@@ -11,13 +12,14 @@ class Modelo:
         self.CrearRecursos()
 
     def CrearRecursos(self):
-        for i in range(6):  # iniciar recursos
+        for i in range(9):  # iniciar recursos
             nombre = "r" + str(i + 1)
             self.recursos[nombre] = Recurso(nombre)
 
     def Add_proceso(self, proceso):
         self.procesos += [Proceso(proceso)]  # agregar proceso
 
+    # The weight to subtract should be passed in the function.
     def Corriendo(self):
         if self.enejecucion:
             self.enejecucion.tamaño -= 10
@@ -26,7 +28,7 @@ class Modelo:
             else:
                 self.enejecucion.estado = "Bloqueado"
 
-            if self.enejecucion.tamaño == 0:
+            if self.enejecucion.tamaño <= 0:
                 self.terminado += [self.enejecucion]
                 self.procesos.remove(self.enejecucion)
                 self.enejecucion = []

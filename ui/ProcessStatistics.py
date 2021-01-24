@@ -6,26 +6,51 @@ from tkinter import ttk
 
 class ProcessStatistics:
 
-    def __init__(self, process):
+    def __init__(self, process_info):
 
-        # Mock for Process name
-        self.process_name = ["Process1", "Process2", "Process3", "Process4", "Process5"]
-
-        # Mock for process size
-        self.process_size = [40, 50, 100, 200, 50]
-
-        # Mock for process threads
-        self.process_threads = np.zeros(5)
-
-        # Mock for process resources
+        self.process_info = process_info
+        self.process_name = self.get_process_name()
+        self.process_size = self.get_process_weight()
+        self.process_threads = self.get_process_threads()
         # Those process resources should be a type of ENUM
-        self.process_resources = ["1", "2", "3", "4", "5"]
-
-        # Mock for process state
+        self.process_resources = self.get_process_resources()
         # Those process resources should be a type of ENUM also
-        self.process_state = ["ready", "execution", "ready", "block", "ready"]
+        self.process_state = self.get_process_state()
 
-        self.show_process_stats()
+    def get_process_name(self):
+        names = []
+        for process in self.process_info.get('procesos'):
+            names.append(process.nombre)
+
+        return names
+
+    def get_process_weight(self):
+        weights = []
+        for process in self.process_info.get('procesos'):
+            weights.append(process.tamaño)
+
+        return weights
+
+    def get_process_threads(self):
+        threads = []
+        for process in self.process_info.get('procesos'):
+            threads.append(process.hilos)
+
+        return threads
+
+    def get_process_resources(self):
+        resources = []
+        for process in self.process_info.get('procesos'):
+            resources.append(process.recursos)
+
+        return resources
+
+    def get_process_state(self):
+        states = []
+        for process in self.process_info.get('procesos'):
+            states.append(process.estado)
+
+        return states
 
     def show_process_stats(self):
 

@@ -1,13 +1,16 @@
 from tkinter import *
 
 from class_Proceso import Proceso
+from modelo import Modelo
 from ui.ProcessStatistics import ProcessStatistics
+from random import randint
 
 
 class ProcessWindow:
 
     def __init__(self, win):
         self.process_to_execute = []
+        self.model = Modelo()
 
         self.lb_process_id = Label(win, text="Process id")
         self.lb_process_name = Label(win, text="Name")
@@ -56,18 +59,30 @@ class ProcessWindow:
         process_weight = int(self.input_process_weight.get())
         process_threads = int(self.input_process_threads.get())
 
+        resources = self.select_process()
         process_detail = [
             process_id,
             process_name,
             process_weight,
             process_threads,
-            "resoruces is pending"]
+            resources]
 
         process = Proceso(process_detail)
+
+        # This process is added to stack in [Model]
+        self.model.Add_proceso(process_detail)
 
         self.process_to_execute.append(process)
 
         self.add_process_to_table(process_name=process_name)
+
+        # For each process append 2 resources
+    def select_process(self):
+        resources = [self.model.resources[randint(0, 8)], self.model.resources[randint(0, 8)]]
+        while resources[0] == resources[1]:
+            resources.append(self.model.resources[randint(0, 8)])
+
+        return resources
 
     def add_process_to_table(self, process_name):
         process_label = Label(self.process_frame, text=process_name)
@@ -84,6 +99,13 @@ class ProcessWindow:
         # The [Proceso] shall be able to receive a list of process
         # process = Proceso(self.process_to_execute)
         self.clean_process_frame()
+
+
+
+        while self.model.hayprocesos():
+            process_result = self.model.Corriendo()
+            ProcessStatistics(process_result)
+
 
     def clean_process_frame(self):
         for widget in self.process_frame.winfo_children():
