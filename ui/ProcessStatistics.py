@@ -6,10 +6,9 @@ from tkinter import ttk
 
 class ProcessStatistics:
 
-    def __init__(self, process_info):
+    def __init__(self, process_info, frame):
 
-        self.root = tk.Tk()
-
+        self.frame = frame
         self.process_info = process_info
         self.process_name = self.get_process_name()
         self.process_size = self.get_process_weight()
@@ -18,6 +17,8 @@ class ProcessStatistics:
         self.process_resources = self.get_process_resources()
         # Those process resources should be a type of ENUM also
         self.process_state = self.get_process_state()
+
+        self.show_process_stats()
 
     def get_process_name(self):
         names = []
@@ -61,8 +62,6 @@ class ProcessStatistics:
         from controller layer.
         """
 
-        self.root = tk.Tk()
-
         process_df = pd.DataFrame({
             "Process name": self.process_name,
             "process size": self.process_size,
@@ -73,7 +72,7 @@ class ProcessStatistics:
 
         cols = list(process_df.columns)
 
-        tree = ttk.Treeview(self.root)
+        tree = ttk.Treeview(self.frame)
         tree.pack()
         tree["columns"] = cols
         for i in cols:
@@ -83,10 +82,8 @@ class ProcessStatistics:
         for index, row in process_df.iterrows():
             tree.insert("", 0, text=index, values=list(row))
 
-        self.root.mainloop()
-
     def destroy_stat_view(self):
-        self.root.destroy()
+        self.frame.destroy()
 
     def update_view(self):
-        self.root.update()
+        self.frame.update()
