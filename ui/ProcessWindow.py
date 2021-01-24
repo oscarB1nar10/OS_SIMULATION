@@ -1,7 +1,7 @@
 from tkinter import *
 
-from class_Proceso import Proceso
-from modelo import Modelo
+from model.class_Proceso import Proceso
+from model.modelo import Modelo
 from ui.ProcessStatistics import ProcessStatistics
 from random import randint
 from tkinter import ttk

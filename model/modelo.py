@@ -1,5 +1,7 @@
-from class_Proceso import Proceso, Recurso
+
 from random import choice
+from model.class_Proceso import Recurso, Proceso
+
 
 class Modelo:
 

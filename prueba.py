@@ -1,4 +1,4 @@
-from modelo import Modelo
+from model.modelo import Modelo
 
 Model = Modelo()
 
