@@ -10,7 +10,7 @@ class ProcessStatistics:
         self.process_info = process_info
         process_info_filtered = self.get_process_info_filtered()
         self.process_name = process_info_filtered.get("names")
-        self.process_size = process_info_filtered.get("size")
+        self.process_size = process_info_filtered.get("weights")
         self.process_threads = process_info_filtered.get("threads")
         # Those process resources should be a type of ENUM
         self.process_resources = process_info_filtered.get("resources")
